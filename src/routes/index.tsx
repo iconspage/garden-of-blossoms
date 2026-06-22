@@ -2,13 +2,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { MapPin, Phone, Star, Wifi, Utensils, Waves, Wind, Car, Coffee, ChevronRight, Menu, X, Sailboat, Fish, CalendarDays, UtensilsCrossed, ChevronLeft } from "lucide-react";
-import img2 from "@/assets/image-2.png.asset.json";
-import img3 from "@/assets/image-3.png.asset.json";
-import img4 from "@/assets/image-4.png.asset.json";
-import img5 from "@/assets/image-5.png.asset.json";
-import img6 from "@/assets/image-6.png.asset.json";
-import img7 from "@/assets/image-7.png.asset.json";
-import img8 from "@/assets/image-8.png.asset.json";
+import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
+import flamingoBar from "@/assets/palm-garden-flamingo-bar.png.asset.json";
+import heroAsset from "@/assets/palm-garden-hero.jpeg.asset.json";
+import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
+import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
+import poolGuest from "@/assets/palm-garden-pool-guest.png.asset.json";
+import swanBoat from "@/assets/palm-garden-swan-boat.png.asset.json";
+import waterGardenNight from "@/assets/palm-garden-water-garden-night.png.asset.json";
 import { useSiteData } from "@/lib/site-data";
 
 const ICONS = { Sailboat, Fish, Coffee, UtensilsCrossed, CalendarDays, Waves, Wind } as const;
@@ -20,19 +21,19 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "A tranquil garden resort in Kaase, Kumasi. Pool, boat rides, fish feeding, café, restaurant & event spaces." },
       { property: "og:title", content: "Palm Garden Resort — Kaase, Kumasi" },
       { property: "og:description", content: "Book your stay at Palm Garden Resort — gardens, pool, boat rides, dining & events in Ashanti." },
-      { property: "og:image", content: img2.url },
-      { name: "twitter:image", content: img2.url },
+      { property: "og:image", content: heroAsset.url },
+      { name: "twitter:image", content: heroAsset.url },
     ],
   }),
   component: Index,
 });
 
-const HERO = img4.url;
+const HERO = heroAsset.url;
 const LOGO_MARK = "Palm Garden";
 const PHONE_TEL = "tel:+233539795100";
 const PHONE_DISPLAY = "053 979 5100";
 
-const gallery = [img2.url, img4.url, img5.url, img6.url, img7.url, img8.url, img3.url, img2.url];
+const gallery = [heroAsset.url, poolDay.url, waterGardenNight.url, flamingoBar.url, poolGuest.url, buildingPool.url, longPool.url, swanBoat.url];
 
 const amenities = [
   { icon: Waves, label: "Outdoor Pool" },

@@ -2,10 +2,13 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { saveSiteContent } from "./site-data.functions";
 
-import img4 from "@/assets/image-4.png.asset.json";
-import img5 from "@/assets/image-5.png.asset.json";
-import img6 from "@/assets/image-6.png.asset.json";
-import img7 from "@/assets/image-7.png.asset.json";
+import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
+import flamingoBar from "@/assets/palm-garden-flamingo-bar.png.asset.json";
+import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
+import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
+import poolGuest from "@/assets/palm-garden-pool-guest.png.asset.json";
+import swanBoat from "@/assets/palm-garden-swan-boat.png.asset.json";
+import waterGardenNight from "@/assets/palm-garden-water-garden-night.png.asset.json";
 
 export type Activity = {
   id: string;
@@ -33,18 +36,18 @@ export type SiteData = {
 
 export const DEFAULT_DATA: SiteData = {
   activities: [
-    { id: "boat", iconKey: "Sailboat", name: "Boat Riding", price: "₵50", unit: "per person", desc: "Glide across our private pond on a hand-crafted paddle boat — perfect for couples and families.", img: img5.url },
-    { id: "fish", iconKey: "Fish", name: "Fish Feeding", price: "₵20", unit: "per visit", desc: "Feed our resident koi and tilapia from the wooden bridges through the water garden.", img: "https://images.unsplash.com/photo-1535591273668-578e31182c4f?w=1200&q=80" },
-    { id: "cafe", iconKey: "Coffee", name: "Café Shop", price: "from ₵25", unit: "hot drinks & pastries", desc: "Specialty coffee, fresh juices and pastries served poolside throughout the day.", img: "https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&q=80" },
-    { id: "restaurant", iconKey: "UtensilsCrossed", name: "Flamingo Restaurant", price: "from ₵80", unit: "à la carte", desc: "Live-grill restaurant and bar serving Ghanaian classics and continental favourites under the lights.", img: img7.url },
-    { id: "event", iconKey: "CalendarDays", name: "Event Room", price: "from ₵2,500", unit: "per event", desc: "Outdoor garden pavilion for weddings, birthdays and corporate events — up to 150 guests.", img: img6.url },
-    { id: "pool", iconKey: "Waves", name: "Pool Access", price: "₵40", unit: "day pass", desc: "Spend the day at our palm-shaded swimming pool with loungers, towels and bar service.", img: img4.url },
-    { id: "swing", iconKey: "Wind", name: "Garden Swing", price: "Free", unit: "for guests", desc: "Unwind on our handcrafted wooden swings nestled among the palms — a quiet favourite of every guest.", img: "https://images.unsplash.com/photo-1502230831726-fe5549140034?w=1200&q=80" },
+    { id: "boat", iconKey: "Sailboat", name: "Boat Riding", price: "₵50", unit: "per person", desc: "Glide across our private pond on a hand-crafted paddle boat — perfect for couples and families.", img: swanBoat.url },
+    { id: "fish", iconKey: "Fish", name: "Fish Feeding", price: "₵20", unit: "per visit", desc: "Feed our resident koi and tilapia from the wooden bridges through the water garden.", img: waterGardenNight.url },
+    { id: "cafe", iconKey: "Coffee", name: "Café Shop", price: "from ₵25", unit: "hot drinks & pastries", desc: "Specialty coffee, fresh juices and pastries served poolside throughout the day.", img: buildingPool.url },
+    { id: "restaurant", iconKey: "UtensilsCrossed", name: "Flamingo Restaurant", price: "from ₵80", unit: "à la carte", desc: "Live-grill restaurant and bar serving Ghanaian classics and continental favourites under the lights.", img: flamingoBar.url },
+    { id: "event", iconKey: "CalendarDays", name: "Event Room", price: "from ₵2,500", unit: "per event", desc: "Outdoor garden pavilion for weddings, birthdays and corporate events — up to 150 guests.", img: waterGardenNight.url },
+    { id: "pool", iconKey: "Waves", name: "Pool Access", price: "₵40", unit: "day pass", desc: "Spend the day at our palm-shaded swimming pool with loungers, towels and bar service.", img: poolGuest.url },
+    { id: "swing", iconKey: "Wind", name: "Garden Swing", price: "Free", unit: "for guests", desc: "Unwind in the shaded garden spaces tucked between the palms and pool.", img: poolDay.url },
   ],
   rooms: [
-    { id: "deluxe", name: "Garden Deluxe", price: "₵850", img: "https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200&q=80", desc: "Spacious king room opening onto private tropical gardens.", features: ["King bed", "Garden terrace", "Rain shower", '55" smart TV'] },
-    { id: "suite", name: "Palm Suite", price: "₵1,400", img: "https://images.unsplash.com/photo-1590490360182-c33d57733427?w=1200&q=80", desc: "A generous suite with separate lounge and views of the palm courtyard.", features: ["Lounge area", "Soaking tub", "Mini bar", "Espresso machine"] },
-    { id: "villa", name: "Ashanti Villa", price: "₵2,600", img: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200&q=80", desc: "Our signature standalone villa with plunge pool and personal host.", features: ["Plunge pool", "Private chef", "Two bedrooms", "Outdoor lounge"] },
+    { id: "deluxe", name: "Garden Deluxe", price: "₵850", img: buildingPool.url, desc: "Spacious king room opening onto private tropical gardens.", features: ["King bed", "Garden terrace", "Rain shower", '55" smart TV'] },
+    { id: "suite", name: "Palm Suite", price: "₵1,400", img: poolDay.url, desc: "A generous suite with separate lounge and views of the palm courtyard.", features: ["Lounge area", "Soaking tub", "Mini bar", "Espresso machine"] },
+    { id: "villa", name: "Ashanti Villa", price: "₵2,600", img: longPool.url, desc: "Our signature standalone villa with plunge pool and personal host.", features: ["Plunge pool", "Private chef", "Two bedrooms", "Outdoor lounge"] },
   ],
 };
 
