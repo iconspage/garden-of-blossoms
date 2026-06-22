@@ -159,7 +159,7 @@ function Index() {
 
       {/* IMAGE BREAK */}
       <section className="relative h-[60vh] overflow-hidden">
-        <motion.img initial={{ scale: 1.2 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }} src={img2.url} alt="Palm Garden pool from above" className="absolute inset-0 w-full h-full object-cover" />
+        <motion.img initial={{ scale: 1.2 }} whileInView={{ scale: 1 }} viewport={{ once: true }} transition={{ duration: 1.6, ease: [0.22, 1, 0.36, 1] }} src={longPool.url} alt="Palm Garden pool surrounded by trees" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative h-full flex items-center justify-center px-6">
           <motion.blockquote initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="font-display text-3xl md:text-5xl text-white text-center max-w-4xl leading-tight italic font-light">
@@ -399,7 +399,7 @@ function BookingSection({ rooms }: { rooms: { name: string }[] }) {
 
   return (
     <section id="book" className="relative py-32 px-6 overflow-hidden">
-      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${img4.url})` }} />
+      <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url(${poolDay.url})` }} />
       <div className="absolute inset-0 bg-primary/85" />
       <div className="relative max-w-4xl mx-auto text-primary-foreground">
         <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-center mb-12">
