@@ -62,6 +62,33 @@ function AdminPage() {
     setData(next);
   };
 
+  const updateHero = (field: keyof Hero, value: string) => {
+    if (!data) return;
+    setData({ ...data, hero: { ...data.hero, [field]: value } });
+  };
+
+  const updateReview = (field: keyof Review, value: string) => {
+    if (!data) return;
+    setData({ ...data, review: { ...data.review, [field]: value } });
+  };
+
+  const updateGalleryItem = (i: number, value: string) => {
+    if (!data) return;
+    const gallery = [...data.gallery];
+    gallery[i] = value;
+    setData({ ...data, gallery });
+  };
+
+  const addGalleryItem = () => {
+    if (!data) return;
+    setData({ ...data, gallery: [...data.gallery, ""] });
+  };
+
+  const removeGalleryItem = (i: number) => {
+    if (!data) return;
+    setData({ ...data, gallery: data.gallery.filter((_, idx) => idx !== i) });
+  };
+
   const handleSave = async () => {
     if (!data) return;
     setSaving(true);
