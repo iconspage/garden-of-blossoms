@@ -112,19 +112,19 @@ function Index() {
       {/* HERO */}
       <section id="top" className="relative h-screen overflow-hidden">
         <motion.div style={{ y: heroY }} className="absolute inset-0">
-          <img src={HERO} alt="Palm Garden Hotel" className="hero-zoom w-full h-[120%] object-cover" />
+          <img src={hero.image} alt="Palm Garden Hotel" className="hero-zoom w-full h-[120%] object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/80" />
         </motion.div>
 
         <motion.div style={{ opacity: heroOpacity }} className="relative h-full flex flex-col items-center justify-center text-center px-6 text-white">
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }} className="uppercase tracking-[0.4em] text-xs text-accent mb-6">
-            Kaase · Kumasi · Ghana
+            {hero.eyebrow}
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.35, ease: [0.22, 1, 0.36, 1] }} className="font-display text-6xl md:text-8xl lg:text-9xl font-light leading-[0.95] max-w-5xl">
-            A garden retreat in the heart of Ashanti.
+            {hero.title}
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }} className="mt-8 max-w-xl text-white/80 text-lg font-light">
-            Where centuries of Kumasi hospitality meet quiet luxury, lush palms, and unhurried days.
+            {hero.subtitle}
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.1 }} className="mt-12 flex flex-wrap gap-4 justify-center">
             <a href="#book" className="bg-accent text-accent-foreground px-8 py-4 rounded-full text-sm tracking-widest uppercase font-medium hover:bg-accent/90 transition">Reserve a Stay</a>
