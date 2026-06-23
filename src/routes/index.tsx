@@ -28,12 +28,9 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const HERO = heroAsset.url;
 const LOGO_MARK = "Palm Garden";
 const PHONE_TEL = "tel:+233539795100";
 const PHONE_DISPLAY = "053 979 5100";
-
-const gallery = [heroAsset.url, poolDay.url, waterGardenNight.url, flamingoBar.url, poolGuest.url, buildingPool.url, longPool.url, swanBoat.url];
 
 const amenities = [
   { icon: Waves, label: "Outdoor Pool" },
@@ -53,6 +50,9 @@ function Index() {
   const siteData = useSiteData();
   const rooms = siteData.rooms;
   const activities = siteData.activities;
+  const gallery = siteData.gallery;
+  const hero = siteData.hero;
+  const review = siteData.review;
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 800], [0, 200]);
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.3]);
@@ -112,19 +112,19 @@ function Index() {
       {/* HERO */}
       <section id="top" className="relative h-screen overflow-hidden">
         <motion.div style={{ y: heroY }} className="absolute inset-0">
-          <img src={HERO} alt="Palm Garden Hotel" className="hero-zoom w-full h-[120%] object-cover" />
+          <img src={hero.image} alt="Palm Garden Hotel" className="hero-zoom w-full h-[120%] object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/80" />
         </motion.div>
 
         <motion.div style={{ opacity: heroOpacity }} className="relative h-full flex flex-col items-center justify-center text-center px-6 text-white">
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }} className="uppercase tracking-[0.4em] text-xs text-accent mb-6">
-            Kaase · Kumasi · Ghana
+            {hero.eyebrow}
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.35, ease: [0.22, 1, 0.36, 1] }} className="font-display text-6xl md:text-8xl lg:text-9xl font-light leading-[0.95] max-w-5xl">
-            A garden retreat in the heart of Ashanti.
+            {hero.title}
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }} className="mt-8 max-w-xl text-white/80 text-lg font-light">
-            Where centuries of Kumasi hospitality meet quiet luxury, lush palms, and unhurried days.
+            {hero.subtitle}
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.1 }} className="mt-12 flex flex-wrap gap-4 justify-center">
             <a href="#book" className="bg-accent text-accent-foreground px-8 py-4 rounded-full text-sm tracking-widest uppercase font-medium hover:bg-accent/90 transition">Reserve a Stay</a>
@@ -150,8 +150,8 @@ function Index() {
             <div className="flex items-center gap-2 pt-4">
               {[1, 2, 3, 4].map((i) => <Star key={i} className="w-5 h-5 fill-accent text-accent" />)}
               <Star className="w-5 h-5 fill-accent/50 text-accent" />
-              <span className="ml-3 text-foreground font-medium">4.3</span>
-              <span className="text-muted-foreground">· 153 Google reviews</span>
+              <span className="ml-3 text-foreground font-medium">{review.rating}</span>
+              <span className="text-muted-foreground">· {review.reviewCount}</span>
             </div>
           </motion.div>
         </div>
@@ -163,8 +163,8 @@ function Index() {
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative h-full flex items-center justify-center px-6">
           <motion.blockquote initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="font-display text-3xl md:text-5xl text-white text-center max-w-4xl leading-tight italic font-light">
-            "The most peaceful stay we've had in Kumasi — the gardens are extraordinary."
-            <footer className="not-italic text-sm tracking-[0.3em] uppercase mt-8 text-white/70">— Guest review, Google</footer>
+            "{review.quote}"
+            <footer className="not-italic text-sm tracking-[0.3em] uppercase mt-8 text-white/70">{review.attribution}</footer>
           </motion.blockquote>
         </div>
       </section>
@@ -351,7 +351,7 @@ function Index() {
               </div>
               <div className="flex items-start gap-4">
                 <Star className="w-5 h-5 text-accent mt-1 shrink-0 fill-accent" />
-                <div><p className="font-medium">Rated 4.3 on Google</p><p className="text-muted-foreground">From 153 verified guest reviews</p></div>
+                <div><p className="font-medium">Rated {review.rating} on Google</p><p className="text-muted-foreground">From {review.reviewCount}</p></div>
               </div>
             </div>
           </motion.div>

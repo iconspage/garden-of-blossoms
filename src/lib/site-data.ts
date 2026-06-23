@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { saveSiteContent } from "./site-data.functions";
 
 import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
+import heroAsset from "@/assets/palm-garden-hero.jpeg.asset.json";
 import flamingoBar from "@/assets/palm-garden-flamingo-bar.png.asset.json";
 import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
 import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
@@ -29,12 +30,42 @@ export type Room = {
   features: string[];
 };
 
+export type Hero = {
+  image: string;
+  eyebrow: string;
+  title: string;
+  subtitle: string;
+};
+
+export type Review = {
+  quote: string;
+  attribution: string;
+  rating: string;
+  reviewCount: string;
+};
+
 export type SiteData = {
+  hero: Hero;
+  review: Review;
+  gallery: string[];
   activities: Activity[];
   rooms: Room[];
 };
 
 export const DEFAULT_DATA: SiteData = {
+  hero: {
+    image: heroAsset.url,
+    eyebrow: "Kaase · Kumasi · Ghana",
+    title: "A garden retreat in the heart of Ashanti.",
+    subtitle: "Where centuries of Kumasi hospitality meet quiet luxury, lush palms, and unhurried days.",
+  },
+  review: {
+    quote: "The most peaceful stay we've had in Kumasi — the gardens are extraordinary.",
+    attribution: "— Guest review, Google",
+    rating: "4.3",
+    reviewCount: "153 Google reviews",
+  },
+  gallery: [heroAsset.url, poolDay.url, waterGardenNight.url, flamingoBar.url, poolGuest.url, buildingPool.url, longPool.url, swanBoat.url],
   activities: [
     { id: "boat", iconKey: "Sailboat", name: "Boat Riding", price: "₵50", unit: "per person", desc: "Glide across our private pond on a hand-crafted paddle boat — perfect for couples and families.", img: swanBoat.url },
     { id: "fish", iconKey: "Fish", name: "Fish Feeding", price: "₵20", unit: "per visit", desc: "Feed our resident koi and tilapia from the wooden bridges through the water garden.", img: waterGardenNight.url },
@@ -54,6 +85,9 @@ export const DEFAULT_DATA: SiteData = {
 function normalize(parsed: Partial<SiteData> | null | undefined): SiteData {
   if (!parsed) return DEFAULT_DATA;
   return {
+    hero: { ...DEFAULT_DATA.hero, ...(parsed.hero ?? {}) },
+    review: { ...DEFAULT_DATA.review, ...(parsed.review ?? {}) },
+    gallery: parsed.gallery?.length ? parsed.gallery : DEFAULT_DATA.gallery,
     activities: parsed.activities?.length ? (parsed.activities as Activity[]) : DEFAULT_DATA.activities,
     rooms: parsed.rooms?.length ? (parsed.rooms as Room[]) : DEFAULT_DATA.rooms,
   };

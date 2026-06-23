@@ -11,6 +11,8 @@ import {
   type SiteData,
   type Activity,
   type Room,
+  type Hero,
+  type Review,
 } from "@/lib/site-data";
 
 export const Route = createFileRoute("/admin")({
@@ -58,6 +60,33 @@ function AdminPage() {
     const next = { ...data, rooms: [...data.rooms] };
     next.rooms[i] = { ...next.rooms[i], [field]: value };
     setData(next);
+  };
+
+  const updateHero = (field: keyof Hero, value: string) => {
+    if (!data) return;
+    setData({ ...data, hero: { ...data.hero, [field]: value } });
+  };
+
+  const updateReview = (field: keyof Review, value: string) => {
+    if (!data) return;
+    setData({ ...data, review: { ...data.review, [field]: value } });
+  };
+
+  const updateGalleryItem = (i: number, value: string) => {
+    if (!data) return;
+    const gallery = [...data.gallery];
+    gallery[i] = value;
+    setData({ ...data, gallery });
+  };
+
+  const addGalleryItem = () => {
+    if (!data) return;
+    setData({ ...data, gallery: [...data.gallery, ""] });
+  };
+
+  const removeGalleryItem = (i: number) => {
+    if (!data) return;
+    setData({ ...data, gallery: data.gallery.filter((_, idx) => idx !== i) });
   };
 
   const handleSave = async () => {
@@ -125,6 +154,45 @@ function AdminPage() {
             </button>
           </div>
         </div>
+
+        <section className="mb-12">
+          <h2 className="font-display text-2xl text-primary mb-6">Hero Section</h2>
+          <div className="bg-background rounded-lg shadow-sm p-6 grid md:grid-cols-[160px_1fr] gap-6">
+            <img src={data.hero.image} alt="hero" className="w-full h-32 object-cover rounded-md" />
+            <div className="grid md:grid-cols-2 gap-4">
+              <div className="md:col-span-2"><LabeledInput label="Hero Image URL" value={data.hero.image} onChange={(v) => updateHero("image", v)} /></div>
+              <LabeledInput label="Eyebrow (small line above title)" value={data.hero.eyebrow} onChange={(v) => updateHero("eyebrow", v)} />
+              <LabeledInput label="Title" value={data.hero.title} onChange={(v) => updateHero("title", v)} />
+              <div className="md:col-span-2"><LabeledInput label="Subtitle" value={data.hero.subtitle} onChange={(v) => updateHero("subtitle", v)} /></div>
+            </div>
+          </div>
+        </section>
+
+        <section className="mb-12">
+          <h2 className="font-display text-2xl text-primary mb-6">Guest Review & Google Rating</h2>
+          <div className="bg-background rounded-lg shadow-sm p-6 grid md:grid-cols-2 gap-4">
+            <div className="md:col-span-2"><LabeledInput label="Quote" value={data.review.quote} onChange={(v) => updateReview("quote", v)} /></div>
+            <LabeledInput label="Attribution" value={data.review.attribution} onChange={(v) => updateReview("attribution", v)} />
+            <LabeledInput label="Google Rating (e.g. 4.3)" value={data.review.rating} onChange={(v) => updateReview("rating", v)} />
+            <div className="md:col-span-2"><LabeledInput label="Review Count Text (e.g. 153 Google reviews)" value={data.review.reviewCount} onChange={(v) => updateReview("reviewCount", v)} /></div>
+          </div>
+        </section>
+
+        <section className="mb-12">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="font-display text-2xl text-primary">Gallery Images</h2>
+            <button onClick={addGalleryItem} className="text-xs px-4 py-2 border border-border rounded-full hover:bg-background">+ Add Image</button>
+          </div>
+          <div className="space-y-3">
+            {data.gallery.map((src, i) => (
+              <div key={i} className="bg-background rounded-lg shadow-sm p-4 grid grid-cols-[80px_1fr_auto] gap-4 items-center">
+                <img src={src} alt={`gallery ${i + 1}`} className="w-20 h-20 object-cover rounded-md" />
+                <LabeledInput label={`Image ${i + 1} URL`} value={src} onChange={(v) => updateGalleryItem(i, v)} />
+                <button onClick={() => removeGalleryItem(i)} className="text-xs px-3 py-2 border border-border rounded-full hover:bg-destructive hover:text-destructive-foreground self-end">Remove</button>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <section className="mb-12">
           <h2 className="font-display text-2xl text-primary mb-6">Rooms</h2>
