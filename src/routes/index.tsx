@@ -2,14 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { MapPin, Phone, Star, Wifi, Utensils, Waves, Wind, Car, Coffee, ChevronRight, Menu, X, Sailboat, Fish, CalendarDays, UtensilsCrossed, ChevronLeft } from "lucide-react";
-import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
-import flamingoBar from "@/assets/palm-garden-flamingo-bar.png.asset.json";
 import heroAsset from "@/assets/palm-garden-hero.jpeg.asset.json";
 import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
 import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
-import poolGuest from "@/assets/palm-garden-pool-guest.png.asset.json";
-import swanBoat from "@/assets/palm-garden-swan-boat.png.asset.json";
-import waterGardenNight from "@/assets/palm-garden-water-garden-night.png.asset.json";
 import { useSiteData } from "@/lib/site-data";
 
 const ICONS = { Sailboat, Fish, Coffee, UtensilsCrossed, CalendarDays, Waves, Wind } as const;
@@ -28,12 +23,9 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const HERO = heroAsset.url;
 const LOGO_MARK = "Palm Garden";
 const PHONE_TEL = "tel:+233539795100";
 const PHONE_DISPLAY = "053 979 5100";
-
-const gallery = [heroAsset.url, poolDay.url, waterGardenNight.url, flamingoBar.url, poolGuest.url, buildingPool.url, longPool.url, swanBoat.url];
 
 const amenities = [
   { icon: Waves, label: "Outdoor Pool" },
@@ -53,6 +45,8 @@ function Index() {
   const siteData = useSiteData();
   const rooms = siteData.rooms;
   const activities = siteData.activities;
+  const gallery = siteData.gallery;
+  const HERO = siteData.hero;
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 800], [0, 200]);
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.3]);
@@ -79,7 +73,7 @@ function Index() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [lightbox]);
+  }, [lightbox, gallery.length]);
 
   return (
     <div className="bg-background text-foreground font-sans antialiased overflow-x-hidden">
