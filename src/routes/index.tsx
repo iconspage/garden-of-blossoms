@@ -28,12 +28,9 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const HERO = heroAsset.url;
 const LOGO_MARK = "Palm Garden";
 const PHONE_TEL = "tel:+233539795100";
 const PHONE_DISPLAY = "053 979 5100";
-
-const gallery = [heroAsset.url, poolDay.url, waterGardenNight.url, flamingoBar.url, poolGuest.url, buildingPool.url, longPool.url, swanBoat.url];
 
 const amenities = [
   { icon: Waves, label: "Outdoor Pool" },
@@ -53,6 +50,8 @@ function Index() {
   const siteData = useSiteData();
   const rooms = siteData.rooms;
   const activities = siteData.activities;
+  const gallery = siteData.gallery;
+  const HERO = siteData.hero;
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 800], [0, 200]);
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.3]);
