@@ -11,6 +11,8 @@ import {
   type SiteData,
   type Activity,
   type Room,
+  type Hero,
+  type Review,
 } from "@/lib/site-data";
 
 export const Route = createFileRoute("/admin")({
