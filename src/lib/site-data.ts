@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { saveSiteContent } from "./site-data.functions";
+import { saveSiteContent, uploadSiteImage } from "./site-data.functions";
 
 import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
 import flamingoBar from "@/assets/palm-garden-flamingo-bar.png.asset.json";
+import heroAsset from "@/assets/palm-garden-hero.jpeg.asset.json";
 import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
 import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
 import poolGuest from "@/assets/palm-garden-pool-guest.png.asset.json";
@@ -30,11 +31,15 @@ export type Room = {
 };
 
 export type SiteData = {
+  hero: string;
+  gallery: string[];
   activities: Activity[];
   rooms: Room[];
 };
 
 export const DEFAULT_DATA: SiteData = {
+  hero: heroAsset.url,
+  gallery: [heroAsset.url, poolDay.url, waterGardenNight.url, flamingoBar.url, poolGuest.url, buildingPool.url, longPool.url, swanBoat.url],
   activities: [
     { id: "boat", iconKey: "Sailboat", name: "Boat Riding", price: "₵50", unit: "per person", desc: "Glide across our private pond on a hand-crafted paddle boat — perfect for couples and families.", img: swanBoat.url },
     { id: "fish", iconKey: "Fish", name: "Fish Feeding", price: "₵20", unit: "per visit", desc: "Feed our resident koi and tilapia from the wooden bridges through the water garden.", img: waterGardenNight.url },
@@ -54,9 +59,27 @@ export const DEFAULT_DATA: SiteData = {
 function normalize(parsed: Partial<SiteData> | null | undefined): SiteData {
   if (!parsed) return DEFAULT_DATA;
   return {
+    hero: typeof parsed.hero === "string" && parsed.hero ? parsed.hero : DEFAULT_DATA.hero,
+    gallery: Array.isArray(parsed.gallery) && parsed.gallery.length ? parsed.gallery.filter((s): s is string => typeof s === "string") : DEFAULT_DATA.gallery,
     activities: parsed.activities?.length ? (parsed.activities as Activity[]) : DEFAULT_DATA.activities,
     rooms: parsed.rooms?.length ? (parsed.rooms as Room[]) : DEFAULT_DATA.rooms,
   };
+}
+
+export async function uploadImage(file: File, password: string): Promise<string> {
+  const base64 = await new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      resolve(result.split(",")[1] ?? "");
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsDataURL(file);
+  });
+  const res = await uploadSiteImage({
+    data: { password, filename: file.name, contentType: file.type || "application/octet-stream", base64 },
+  });
+  return res.url;
 }
 
 export async function loadDataFromCloud(): Promise<SiteData> {
