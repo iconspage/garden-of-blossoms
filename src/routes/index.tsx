@@ -78,7 +78,7 @@ function Index() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [lightbox]);
+  }, [lightbox, gallery.length]);
 
   return (
     <div className="bg-background text-foreground font-sans antialiased overflow-x-hidden">
