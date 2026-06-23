@@ -3,6 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { saveSiteContent } from "./site-data.functions";
 
 import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
+import heroAsset from "@/assets/palm-garden-hero.jpeg.asset.json";
 import flamingoBar from "@/assets/palm-garden-flamingo-bar.png.asset.json";
 import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
 import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
