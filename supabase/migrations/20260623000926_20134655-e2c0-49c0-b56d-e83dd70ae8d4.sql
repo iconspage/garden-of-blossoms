@@ -1,1 +1,0 @@
-DELETE FROM public.site_content WHERE id = 'main';
