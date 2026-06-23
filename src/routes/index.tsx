@@ -351,7 +351,7 @@ function Index() {
               </div>
               <div className="flex items-start gap-4">
                 <Star className="w-5 h-5 text-accent mt-1 shrink-0 fill-accent" />
-                <div><p className="font-medium">Rated 4.3 on Google</p><p className="text-muted-foreground">From 153 verified guest reviews</p></div>
+                <div><p className="font-medium">Rated {review.rating} on Google</p><p className="text-muted-foreground">From {review.reviewCount}</p></div>
               </div>
             </div>
           </motion.div>
