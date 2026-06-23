@@ -150,8 +150,8 @@ function Index() {
             <div className="flex items-center gap-2 pt-4">
               {[1, 2, 3, 4].map((i) => <Star key={i} className="w-5 h-5 fill-accent text-accent" />)}
               <Star className="w-5 h-5 fill-accent/50 text-accent" />
-              <span className="ml-3 text-foreground font-medium">4.3</span>
-              <span className="text-muted-foreground">· 153 Google reviews</span>
+              <span className="ml-3 text-foreground font-medium">{review.rating}</span>
+              <span className="text-muted-foreground">· {review.reviewCount}</span>
             </div>
           </motion.div>
         </div>
