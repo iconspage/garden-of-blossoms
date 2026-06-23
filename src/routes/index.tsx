@@ -163,8 +163,8 @@ function Index() {
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative h-full flex items-center justify-center px-6">
           <motion.blockquote initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="font-display text-3xl md:text-5xl text-white text-center max-w-4xl leading-tight italic font-light">
-            "The most peaceful stay we've had in Kumasi — the gardens are extraordinary."
-            <footer className="not-italic text-sm tracking-[0.3em] uppercase mt-8 text-white/70">— Guest review, Google</footer>
+            "{review.quote}"
+            <footer className="not-italic text-sm tracking-[0.3em] uppercase mt-8 text-white/70">{review.attribution}</footer>
           </motion.blockquote>
         </div>
       </section>
