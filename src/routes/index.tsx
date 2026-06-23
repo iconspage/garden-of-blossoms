@@ -28,12 +28,9 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const HERO = heroAsset.url;
 const LOGO_MARK = "Palm Garden";
 const PHONE_TEL = "tel:+233539795100";
 const PHONE_DISPLAY = "053 979 5100";
-
-const gallery = [heroAsset.url, poolDay.url, waterGardenNight.url, flamingoBar.url, poolGuest.url, buildingPool.url, longPool.url, swanBoat.url];
 
 const amenities = [
   { icon: Waves, label: "Outdoor Pool" },
