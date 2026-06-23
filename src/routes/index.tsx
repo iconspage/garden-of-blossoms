@@ -50,6 +50,9 @@ function Index() {
   const siteData = useSiteData();
   const rooms = siteData.rooms;
   const activities = siteData.activities;
+  const gallery = siteData.gallery;
+  const hero = siteData.hero;
+  const review = siteData.review;
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 800], [0, 200]);
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.3]);
