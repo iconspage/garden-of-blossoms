@@ -212,6 +212,52 @@ function AdminPage() {
         </section>
 
         <section className="mb-12">
+          <div className="flex items-center justify-between mb-6 flex-wrap gap-3">
+            <div>
+              <h2 className="font-display text-2xl text-primary">Customer Bookings</h2>
+              <p className="text-xs text-muted-foreground mt-1">Submitted from the public booking form.</p>
+            </div>
+            <button onClick={refreshBookings} className="text-xs px-4 py-2 border border-border rounded-full hover:bg-background">Refresh</button>
+          </div>
+          {bookingsError && <p className="text-sm text-destructive mb-3">{bookingsError}</p>}
+          {!bookings ? (
+            <p className="text-sm text-muted-foreground">Loading bookings…</p>
+          ) : bookings.length === 0 ? (
+            <p className="text-sm text-muted-foreground bg-background rounded-lg p-6">No bookings yet.</p>
+          ) : (
+            <div className="space-y-3">
+              {bookings.map((b) => (
+                <div key={b.id} className="bg-background rounded-lg shadow-sm p-5 grid md:grid-cols-[1fr_auto] gap-4">
+                  <div className="grid md:grid-cols-2 gap-x-6 gap-y-1 text-sm">
+                    <div><span className="text-muted-foreground">Name: </span><strong>{b.name}</strong></div>
+                    <div><span className="text-muted-foreground">Item: </span>{b.kind} · {b.item_name}</div>
+                    <div><span className="text-muted-foreground">Phone: </span><a href={`tel:${b.phone}`} className="text-accent">{b.phone}</a></div>
+                    <div><span className="text-muted-foreground">Email: </span><a href={`mailto:${b.email}`} className="text-accent">{b.email}</a></div>
+                    {b.checkin && <div><span className="text-muted-foreground">Check-in: </span>{b.checkin}</div>}
+                    {b.checkout && <div><span className="text-muted-foreground">Check-out: </span>{b.checkout}</div>}
+                    {b.guests && <div><span className="text-muted-foreground">Guests: </span>{b.guests}</div>}
+                    <div><span className="text-muted-foreground">Submitted: </span>{new Date(b.created_at).toLocaleString()}</div>
+                    {b.notes && <div className="md:col-span-2"><span className="text-muted-foreground">Notes: </span>{b.notes}</div>}
+                  </div>
+                  <button
+                    onClick={async () => {
+                      if (!confirm("Delete this booking?")) return;
+                      try {
+                        await adminDeleteBooking(adminPassword(), b.id);
+                        setBookings((prev) => (prev ?? []).filter((x) => x.id !== b.id));
+                      } catch (e) {
+                        alert(e instanceof Error ? e.message : "Delete failed");
+                      }
+                    }}
+                    className="text-xs px-3 py-2 border border-border rounded-full hover:bg-destructive hover:text-destructive-foreground self-start"
+                  >Delete</button>
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
+
+        <section className="mb-12">
           <h2 className="font-display text-2xl text-primary mb-6">Rooms</h2>
           <div className="space-y-6">
             {data.rooms.map((r, i) => (
