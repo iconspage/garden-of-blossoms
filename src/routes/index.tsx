@@ -10,7 +10,7 @@ import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
 import poolGuest from "@/assets/palm-garden-pool-guest.png.asset.json";
 import swanBoat from "@/assets/palm-garden-swan-boat.png.asset.json";
 import waterGardenNight from "@/assets/palm-garden-water-garden-night.png.asset.json";
-import { useSiteData } from "@/lib/site-data";
+import { useSiteData, submitBooking } from "@/lib/site-data";
 
 const ICONS = { Sailboat, Fish, Coffee, UtensilsCrossed, CalendarDays, Waves, Wind } as const;
 
