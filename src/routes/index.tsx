@@ -422,6 +422,16 @@ function BookingSection({ rooms, activities, selection, onSelectionConsumed }: {
     }
   }, [allOptions, form.itemKey]);
 
+  const triggerCall = () => {
+    // Use a synthetic anchor click — most reliable across iOS Safari & Android Chrome
+    const a = document.createElement("a");
+    a.href = PHONE_TEL;
+    a.rel = "noopener";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  };
+
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -429,6 +439,26 @@ function BookingSection({ rooms, activities, selection, onSelectionConsumed }: {
     const [kind, ...rest] = form.itemKey.split("::");
     const itemName = rest.join("::");
     const isActivity = kind === "activity";
+
+    // Fire-and-forget webhook to booking bot (don't block UI)
+    try {
+      void fetch("https://palm-garden-bot.onrender.com/new-booking", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: form.name,
+          phone: form.phone,
+          email: form.email,
+          check_in: isActivity ? "" : form.checkin,
+          check_out: isActivity ? "" : form.checkout,
+          room_type: itemName,
+          guests: form.guests,
+          special_requests: form.notes,
+        }),
+        keepalive: true,
+      }).catch(() => {});
+    } catch {}
+
     const res = await submitBooking({
       kind: isActivity ? "activity" : "room",
       item_name: itemName,
@@ -446,10 +476,8 @@ function BookingSection({ rooms, activities, selection, onSelectionConsumed }: {
       return;
     }
     setSubmitted(true);
-    // Trigger phone call to reception
-    setTimeout(() => {
-      window.location.href = PHONE_TEL;
-    }, 600);
+    // Trigger phone call to reception immediately (preserves user gesture)
+    triggerCall();
   };
 
   const selected = form.itemKey.split("::").slice(1).join("::");
