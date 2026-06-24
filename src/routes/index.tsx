@@ -59,6 +59,15 @@ function Index() {
   const [navSolid, setNavSolid] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [bookingSelection, setBookingSelection] = useState<{ kind: "room" | "activity"; name: string } | null>(null);
+
+  const selectAndScrollToBook = (kind: "room" | "activity", name: string) => {
+    setBookingSelection({ kind, name });
+    setMenuOpen(false);
+    setTimeout(() => {
+      document.getElementById("book")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 50);
+  };
 
   useEffect(() => {
     const onScroll = () => setNavSolid(window.scrollY > 60);
