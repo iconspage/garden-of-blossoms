@@ -519,12 +519,12 @@ function Field({ label, value, onChange, type = "text", required }: { label: str
   );
 }
 
-function Select({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: string[] }) {
+function Select({ label, value, onChange, options }: { label: string; value: string; onChange: (v: string) => void; options: { value: string; label: string }[] }) {
   return (
     <label className="block">
       <span className="block text-xs uppercase tracking-[0.2em] text-muted-foreground mb-2">{label}</span>
       <select value={value} onChange={(e) => onChange(e.target.value)} className="w-full border-0 border-b border-border bg-transparent py-2 focus:outline-none focus:border-accent transition">
-        {options.map((o) => <option key={o} value={o}>{o}</option>)}
+        {options.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
       </select>
     </label>
   );
