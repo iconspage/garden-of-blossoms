@@ -32,13 +32,26 @@ function AdminPage() {
   const [data, setData] = useState<SiteData | null>(null);
   const [savedNote, setSavedNote] = useState("");
   const [saving, setSaving] = useState(false);
+  const [bookings, setBookings] = useState<BookingRow[] | null>(null);
+  const [bookingsError, setBookingsError] = useState("");
+
+  const refreshBookings = useCallback(async () => {
+    try {
+      setBookingsError("");
+      const rows = await adminListBookings(adminPassword());
+      setBookings(rows);
+    } catch (e: unknown) {
+      setBookingsError(e instanceof Error ? e.message : "Failed to load bookings");
+    }
+  }, []);
 
   useEffect(() => {
     if (isAdminAuthed()) {
       setAuthed(true);
       loadDataFromCloud().then(setData);
+      refreshBookings();
     }
-  }, []);
+  }, [refreshBookings]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -46,6 +59,7 @@ function AdminPage() {
       setAuthed(true);
       setError("");
       setData(await loadDataFromCloud());
+      refreshBookings();
     } else {
       setError("Invalid credentials");
     }
