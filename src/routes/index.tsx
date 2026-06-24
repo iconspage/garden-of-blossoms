@@ -384,27 +384,76 @@ function Index() {
   );
 }
 
-function BookingSection({ rooms }: { rooms: { name: string }[] }) {
+type BookingItem = { name: string };
+type BookingSelection = { kind: "room" | "activity"; name: string } | null;
+
+function BookingSection({ rooms, activities, selection, onSelectionConsumed }: { rooms: BookingItem[]; activities: BookingItem[]; selection: BookingSelection; onSelectionConsumed: () => void }) {
+  const allOptions = [
+    ...rooms.map((r) => ({ kind: "room" as const, name: r.name })),
+    ...activities.map((a) => ({ kind: "activity" as const, name: a.name })),
+  ];
+  const defaultPick = allOptions[0] ?? { kind: "room" as const, name: "Garden Deluxe" };
+
   const [form, setForm] = useState({
     name: "",
     email: "",
+    phone: "",
     checkin: "",
     checkout: "",
     guests: "2",
-    room: rooms[0]?.name ?? "Garden Deluxe",
+    notes: "",
+    itemKey: `${defaultPick.kind}::${defaultPick.name}`,
   });
   const [submitted, setSubmitted] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    if (rooms[0]?.name && !rooms.some((r) => r.name === form.room)) {
-      setForm((f) => ({ ...f, room: rooms[0].name }));
+    if (selection) {
+      const key = `${selection.kind}::${selection.name}`;
+      setForm((f) => ({ ...f, itemKey: key }));
+      onSelectionConsumed();
     }
-  }, [rooms, form.room]);
+  }, [selection, onSelectionConsumed]);
 
-  const onSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!allOptions.some((o) => `${o.kind}::${o.name}` === form.itemKey) && allOptions[0]) {
+      setForm((f) => ({ ...f, itemKey: `${allOptions[0].kind}::${allOptions[0].name}` }));
+    }
+  }, [allOptions, form.itemKey]);
+
+  const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError("");
+    setSubmitting(true);
+    const [kind, ...rest] = form.itemKey.split("::");
+    const itemName = rest.join("::");
+    const isActivity = kind === "activity";
+    const res = await submitBooking({
+      kind: isActivity ? "activity" : "room",
+      item_name: itemName,
+      name: form.name,
+      email: form.email,
+      phone: form.phone,
+      checkin: isActivity ? null : form.checkin,
+      checkout: isActivity ? null : form.checkout,
+      guests: form.guests,
+      notes: form.notes,
+    });
+    setSubmitting(false);
+    if (!res.ok) {
+      setError(res.error ?? "Could not submit. Please call us instead.");
+      return;
+    }
     setSubmitted(true);
+    // Trigger phone call to reception
+    setTimeout(() => {
+      window.location.href = PHONE_TEL;
+    }, 600);
   };
+
+  const selected = form.itemKey.split("::").slice(1).join("::");
+  const isActivity = form.itemKey.startsWith("activity::");
 
   return (
     <section id="book" className="relative py-32 px-6 overflow-hidden">
@@ -414,25 +463,44 @@ function BookingSection({ rooms }: { rooms: { name: string }[] }) {
         <motion.div variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} className="text-center mb-12">
           <p className="uppercase tracking-[0.3em] text-xs text-accent mb-4">Reserve</p>
           <h2 className="font-display text-5xl md:text-6xl leading-tight">Begin your stay</h2>
-          <p className="mt-4 text-primary-foreground/70">Best rates guaranteed when you book direct.</p>
+          <p className="mt-4 text-primary-foreground/70">Submit your details — we save them and call you back immediately.</p>
         </motion.div>
 
         {submitted ? (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="bg-background/95 text-foreground rounded-sm p-12 text-center">
             <p className="uppercase tracking-[0.3em] text-xs text-accent mb-4">Thank you, {form.name}</p>
-            <h3 className="font-display text-3xl text-primary mb-3">Your request has been received.</h3>
-            <p className="text-muted-foreground">Our reservations team will confirm your {form.room} for {form.guests} guest(s) within the hour.</p>
+            <h3 className="font-display text-3xl text-primary mb-3">Calling our reception now…</h3>
+            <p className="text-muted-foreground mb-6">Your request for <strong>{selected}</strong> has been received. We're dialing {PHONE_DISPLAY} on your device.</p>
+            <a href={PHONE_TEL} className="inline-block bg-accent text-accent-foreground px-8 py-3 rounded-full uppercase tracking-widest text-sm">Call {PHONE_DISPLAY}</a>
           </motion.div>
         ) : (
           <motion.form variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true }} transition={{ delay: 0.15 }} onSubmit={onSubmit} className="bg-background/95 backdrop-blur text-foreground rounded-sm p-8 md:p-12 grid md:grid-cols-2 gap-6 shadow-2xl">
+            <div className="md:col-span-2">
+              <Select
+                label="What would you like to book?"
+                value={form.itemKey}
+                onChange={(v) => setForm({ ...form, itemKey: v })}
+                options={allOptions.map((o) => ({ value: `${o.kind}::${o.name}`, label: `${o.kind === "room" ? "Room" : "Activity"} · ${o.name}` }))}
+              />
+            </div>
             <Field label="Full Name" value={form.name} onChange={(v) => setForm({ ...form, name: v })} required />
+            <Field label="Phone" type="tel" value={form.phone} onChange={(v) => setForm({ ...form, phone: v })} required />
             <Field label="Email" type="email" value={form.email} onChange={(v) => setForm({ ...form, email: v })} required />
-            <Field label="Check-in" type="date" value={form.checkin} onChange={(v) => setForm({ ...form, checkin: v })} required />
-            <Field label="Check-out" type="date" value={form.checkout} onChange={(v) => setForm({ ...form, checkout: v })} required />
-            <Select label="Guests" value={form.guests} onChange={(v) => setForm({ ...form, guests: v })} options={["1", "2", "3", "4", "5+"]} />
-            <Select label="Room" value={form.room} onChange={(v) => setForm({ ...form, room: v })} options={rooms.map((r) => r.name)} />
+            <Select label="Guests" value={form.guests} onChange={(v) => setForm({ ...form, guests: v })} options={["1", "2", "3", "4", "5+"].map((o) => ({ value: o, label: o }))} />
+            {!isActivity && (
+              <>
+                <Field label="Check-in" type="date" value={form.checkin} onChange={(v) => setForm({ ...form, checkin: v })} required />
+                <Field label="Check-out" type="date" value={form.checkout} onChange={(v) => setForm({ ...form, checkout: v })} required />
+              </>
+            )}
+            <div className="md:col-span-2">
+              <Field label="Notes (optional)" value={form.notes} onChange={(v) => setForm({ ...form, notes: v })} />
+            </div>
+            {error && <p className="md:col-span-2 text-sm text-destructive">{error}</p>}
             <div className="md:col-span-2 mt-4 space-y-3">
-              <button type="submit" className="w-full bg-accent text-accent-foreground py-4 rounded-full uppercase tracking-widest text-sm font-medium hover:bg-accent/90 transition">Request Reservation</button>
+              <button type="submit" disabled={submitting} className="w-full bg-accent text-accent-foreground py-4 rounded-full uppercase tracking-widest text-sm font-medium hover:bg-accent/90 transition disabled:opacity-60">
+                {submitting ? "Sending…" : "Submit & Call Reception"}
+              </button>
               <a href={PHONE_TEL} className="block text-center w-full border border-primary-foreground/30 text-foreground py-4 rounded-full uppercase tracking-widest text-sm font-medium hover:bg-primary hover:text-primary-foreground transition">Or call now · {PHONE_DISPLAY}</a>
             </div>
           </motion.form>
