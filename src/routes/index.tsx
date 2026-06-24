@@ -203,9 +203,9 @@ function Index() {
                 <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs uppercase tracking-wider text-muted-foreground/80 mb-5">
                   {r.features.map((f) => <li key={f}>· {f}</li>)}
                 </ul>
-                <a href={PHONE_TEL} className="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-primary group-hover:text-accent transition">
+                <button type="button" onClick={() => selectAndScrollToBook("room", r.name)} className="inline-flex items-center gap-2 text-sm tracking-wider uppercase text-primary group-hover:text-accent transition">
                   Book Now <ChevronRight className="w-4 h-4" />
-                </a>
+                </button>
               </motion.article>
             ))}
           </div>
