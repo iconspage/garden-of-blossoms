@@ -14,6 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          checkin: string | null
+          checkout: string | null
+          created_at: string
+          email: string
+          guests: string | null
+          id: string
+          item_name: string
+          kind: string
+          name: string
+          notes: string | null
+          phone: string
+          status: string
+        }
+        Insert: {
+          checkin?: string | null
+          checkout?: string | null
+          created_at?: string
+          email: string
+          guests?: string | null
+          id?: string
+          item_name?: string
+          kind?: string
+          name: string
+          notes?: string | null
+          phone?: string
+          status?: string
+        }
+        Update: {
+          checkin?: string | null
+          checkout?: string | null
+          created_at?: string
+          email?: string
+          guests?: string | null
+          id?: string
+          item_name?: string
+          kind?: string
+          name?: string
+          notes?: string | null
+          phone?: string
+          status?: string
+        }
+        Relationships: []
+      }
       site_content: {
         Row: {
           data: Json
