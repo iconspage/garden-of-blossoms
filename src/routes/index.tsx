@@ -257,7 +257,7 @@ function Index() {
                     <span className="text-accent font-medium">{a.price}</span>
                   </div>
                   <p className="text-muted-foreground text-sm leading-relaxed mb-6">{a.desc}</p>
-                  <a href={PHONE_TEL} className="inline-flex items-center justify-center w-full bg-primary text-primary-foreground py-3 rounded-full text-xs tracking-widest uppercase font-medium hover:bg-accent hover:text-accent-foreground transition">Book Now · Call</a>
+                  <button type="button" onClick={() => selectAndScrollToBook("activity", a.name)} className="inline-flex items-center justify-center w-full bg-primary text-primary-foreground py-3 rounded-full text-xs tracking-widest uppercase font-medium hover:bg-accent hover:text-accent-foreground transition">Book Now</button>
                 </div>
               </motion.article>
             ))}
