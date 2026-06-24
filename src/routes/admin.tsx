@@ -1,5 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import {
   adminLogin,
   adminLogout,
@@ -8,11 +8,14 @@ import {
   loadDataFromCloud,
   saveData,
   DEFAULT_DATA,
+  adminListBookings,
+  adminDeleteBooking,
   type SiteData,
   type Activity,
   type Room,
   type Hero,
   type Review,
+  type BookingRow,
 } from "@/lib/site-data";
 
 export const Route = createFileRoute("/admin")({
