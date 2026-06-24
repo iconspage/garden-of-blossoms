@@ -1,6 +1,48 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { saveSiteContent } from "./site-data.functions";
+import { saveSiteContent, listBookings as listBookingsFn, deleteBooking as deleteBookingFn, type BookingRow } from "./site-data.functions";
+
+export type { BookingRow };
+
+export type BookingSubmission = {
+  kind: "room" | "activity" | "general";
+  item_name: string;
+  name: string;
+  email: string;
+  phone: string;
+  checkin?: string | null;
+  checkout?: string | null;
+  guests?: string | null;
+  notes?: string | null;
+};
+
+export async function submitBooking(b: BookingSubmission): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const { error } = await supabase.from("bookings").insert({
+      kind: b.kind,
+      item_name: b.item_name.slice(0, 120),
+      name: b.name.slice(0, 120),
+      email: b.email.slice(0, 200),
+      phone: b.phone.slice(0, 40),
+      checkin: b.checkin || null,
+      checkout: b.checkout || null,
+      guests: b.guests ?? null,
+      notes: b.notes ?? null,
+    });
+    if (error) throw error;
+    return { ok: true };
+  } catch (e: unknown) {
+    return { ok: false, error: e instanceof Error ? e.message : "Submit failed" };
+  }
+}
+
+export async function adminListBookings(password: string): Promise<BookingRow[]> {
+  return await listBookingsFn({ data: { password } });
+}
+
+export async function adminDeleteBooking(password: string, id: string): Promise<void> {
+  await deleteBookingFn({ data: { password, id } });
+}
 
 import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
 import heroAsset from "@/assets/palm-garden-hero.jpeg.asset.json";
