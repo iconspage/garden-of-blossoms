@@ -341,7 +341,7 @@ function Index() {
       </AnimatePresence>
 
       {/* BOOKING */}
-      <BookingSection rooms={rooms} />
+      <BookingSection rooms={rooms} activities={activities} selection={bookingSelection} onSelectionConsumed={() => setBookingSelection(null)} />
 
       {/* CONTACT */}
       <section id="contact" className="py-32 px-6 bg-secondary">
