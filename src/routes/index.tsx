@@ -2,15 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, useScroll, useTransform, AnimatePresence } from "motion/react";
 import { MapPin, Phone, Star, Wifi, Utensils, Waves, Wind, Car, Coffee, ChevronRight, Menu, X, Sailboat, Fish, CalendarDays, UtensilsCrossed, ChevronLeft } from "lucide-react";
-import buildingPool from "@/assets/palm-garden-building-pool.png.asset.json";
-import flamingoBar from "@/assets/palm-garden-flamingo-bar.png.asset.json";
-import heroAsset from "@/assets/palm-garden-hero.jpeg.asset.json";
-import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
 import poolDay from "@/assets/palm-garden-pool-day.png.asset.json";
-import poolGuest from "@/assets/palm-garden-pool-guest.png.asset.json";
-import swanBoat from "@/assets/palm-garden-swan-boat.png.asset.json";
-import waterGardenNight from "@/assets/palm-garden-water-garden-night.png.asset.json";
+import longPool from "@/assets/palm-garden-long-pool.png.asset.json";
 import { useSiteData, submitBooking } from "@/lib/site-data";
+import { EditableProvider, EditText, EditOverlay, AdminBar, useEdit } from "@/lib/site-edit";
 
 const ICONS = { Sailboat, Fish, Coffee, UtensilsCrossed, CalendarDays, Waves, Wind } as const;
 
@@ -21,8 +16,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "A tranquil garden resort in Kaase, Kumasi. Pool, boat rides, fish feeding, café, restaurant & event spaces." },
       { property: "og:title", content: "Palm Garden Resort — Kaase, Kumasi" },
       { property: "og:description", content: "Book your stay at Palm Garden Resort — gardens, pool, boat rides, dining & events in Ashanti." },
-      { property: "og:image", content: heroAsset.url },
-      { name: "twitter:image", content: heroAsset.url },
+      { property: "og:image", content: "https://i.postimg.cc/sfM34m41/palm-garden-hero.jpg" },
+      { name: "twitter:image", content: "https://i.postimg.cc/sfM34m41/palm-garden-hero.jpg" },
     ],
   }),
   component: Index,
@@ -48,11 +43,21 @@ const fadeUp = {
 
 function Index() {
   const siteData = useSiteData();
-  const rooms = siteData.rooms;
-  const activities = siteData.activities;
-  const gallery = siteData.gallery;
-  const hero = siteData.hero;
-  const review = siteData.review;
+  return (
+    <EditableProvider initial={siteData}>
+      <IndexContent />
+      <AdminBar />
+    </EditableProvider>
+  );
+}
+
+function IndexContent() {
+  const { data: site } = useEdit();
+  const rooms = site.rooms;
+  const activities = site.activities;
+  const gallery = site.gallery;
+  const hero = site.hero;
+  const review = site.review;
   const { scrollY } = useScroll();
   const heroY = useTransform(scrollY, [0, 800], [0, 200]);
   const heroOpacity = useTransform(scrollY, [0, 600], [1, 0.3]);
@@ -88,7 +93,7 @@ function Index() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
-  }, [lightbox]);
+  }, [lightbox, gallery.length]);
 
   return (
     <div className="bg-background text-foreground font-sans antialiased overflow-x-hidden">
@@ -124,16 +129,17 @@ function Index() {
           <img src={hero.image} alt="Palm Garden Hotel" className="hero-zoom w-full h-[120%] object-cover" />
           <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-black/80" />
         </motion.div>
+        <EditOverlay path="hero.image" label="Change hero" className="absolute top-24 right-4 z-40" />
 
         <motion.div style={{ opacity: heroOpacity }} className="relative h-full flex flex-col items-center justify-center text-center px-6 text-white">
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 0.2 }} className="uppercase tracking-[0.4em] text-xs text-accent mb-6">
-            {hero.eyebrow}
+            <EditText path="hero.eyebrow" />
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1.2, delay: 0.35, ease: [0.22, 1, 0.36, 1] }} className="font-display text-6xl md:text-8xl lg:text-9xl font-light leading-[0.95] max-w-5xl">
-            {hero.title}
+            <EditText path="hero.title" multiline />
           </motion.h1>
           <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 0.8 }} className="mt-8 max-w-xl text-white/80 text-lg font-light">
-            {hero.subtitle}
+            <EditText path="hero.subtitle" multiline />
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 1, delay: 1.1 }} className="mt-12 flex flex-wrap gap-4 justify-center">
             <a href="#book" className="bg-accent text-accent-foreground px-8 py-4 rounded-full text-sm tracking-widest uppercase font-medium hover:bg-accent/90 transition">Reserve a Stay</a>
@@ -159,8 +165,8 @@ function Index() {
             <div className="flex items-center gap-2 pt-4">
               {[1, 2, 3, 4].map((i) => <Star key={i} className="w-5 h-5 fill-accent text-accent" />)}
               <Star className="w-5 h-5 fill-accent/50 text-accent" />
-              <span className="ml-3 text-foreground font-medium">{review.rating}</span>
-              <span className="text-muted-foreground">· {review.reviewCount}</span>
+              <span className="ml-3 text-foreground font-medium"><EditText path="review.rating" /></span>
+              <span className="text-muted-foreground">· <EditText path="review.reviewCount" /></span>
             </div>
           </motion.div>
         </div>
@@ -172,8 +178,8 @@ function Index() {
         <div className="absolute inset-0 bg-black/30" />
         <div className="relative h-full flex items-center justify-center px-6">
           <motion.blockquote initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 1 }} className="font-display text-3xl md:text-5xl text-white text-center max-w-4xl leading-tight italic font-light">
-            "{review.quote}"
-            <footer className="not-italic text-sm tracking-[0.3em] uppercase mt-8 text-white/70">{review.attribution}</footer>
+            "<EditText path="review.quote" multiline />"
+            <footer className="not-italic text-sm tracking-[0.3em] uppercase mt-8 text-white/70"><EditText path="review.attribution" /></footer>
           </motion.blockquote>
         </div>
       </section>
@@ -191,15 +197,16 @@ function Index() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {rooms.map((r, i) => (
-              <motion.article key={r.id} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} transition={{ delay: i * 0.15 }} className="group cursor-pointer">
-                <div className="overflow-hidden rounded-sm aspect-[4/5] mb-6 bg-muted">
+              <motion.article key={r.id} variants={fadeUp} initial="hidden" whileInView="show" viewport={{ once: true, margin: "-80px" }} transition={{ delay: i * 0.15 }} className="group">
+                <div className="relative overflow-hidden rounded-sm aspect-[4/5] mb-6 bg-muted">
                   <img src={r.img} alt={r.name} className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110" />
+                  <EditOverlay path={`rooms.${i}.img`} />
                 </div>
-                <div className="flex items-baseline justify-between mb-3">
-                  <h3 className="font-display text-3xl text-primary">{r.name}</h3>
-                  <span className="text-sm text-muted-foreground"><span className="text-accent font-medium">{r.price}</span> / night</span>
+                <div className="flex items-baseline justify-between mb-3 gap-3">
+                  <h3 className="font-display text-3xl text-primary"><EditText path={`rooms.${i}.name`} /></h3>
+                  <span className="text-sm text-muted-foreground whitespace-nowrap"><span className="text-accent font-medium"><EditText path={`rooms.${i}.price`} /></span> / night</span>
                 </div>
-                <p className="text-muted-foreground mb-5 leading-relaxed">{r.desc}</p>
+                <p className="text-muted-foreground mb-5 leading-relaxed"><EditText path={`rooms.${i}.desc`} multiline /></p>
                 <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs uppercase tracking-wider text-muted-foreground/80 mb-5">
                   {r.features.map((f) => <li key={f}>· {f}</li>)}
                 </ul>
@@ -244,19 +251,20 @@ function Index() {
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {activities.map((a, i) => (
               <motion.article key={a.id} initial={{ opacity: 0, y: 40 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-60px" }} transition={{ delay: (i % 3) * 0.12, duration: 0.8 }} className="group bg-background rounded-sm overflow-hidden shadow-sm hover:shadow-2xl transition-shadow duration-500">
-                <div className="aspect-[4/3] overflow-hidden bg-muted">
+                <div className="relative aspect-[4/3] overflow-hidden bg-muted">
                   <img src={a.img} alt={a.name} className="w-full h-full object-cover transition-transform duration-[1400ms] ease-out group-hover:scale-110" loading="lazy" />
+                  <EditOverlay path={`activities.${i}.img`} />
                 </div>
                 <div className="p-7">
                   <div className="flex items-center gap-3 mb-3 text-accent">
                     {(() => { const Icon = ICONS[a.iconKey] ?? Sailboat; return <Icon className="w-5 h-5" strokeWidth={1.5} />; })()}
-                    <span className="text-xs uppercase tracking-[0.25em]">{a.unit}</span>
+                    <span className="text-xs uppercase tracking-[0.25em]"><EditText path={`activities.${i}.unit`} /></span>
                   </div>
-                  <div className="flex items-baseline justify-between mb-3">
-                    <h3 className="font-display text-2xl text-primary">{a.name}</h3>
-                    <span className="text-accent font-medium">{a.price}</span>
+                  <div className="flex items-baseline justify-between mb-3 gap-3">
+                    <h3 className="font-display text-2xl text-primary"><EditText path={`activities.${i}.name`} /></h3>
+                    <span className="text-accent font-medium whitespace-nowrap"><EditText path={`activities.${i}.price`} /></span>
                   </div>
-                  <p className="text-muted-foreground text-sm leading-relaxed mb-6">{a.desc}</p>
+                  <p className="text-muted-foreground text-sm leading-relaxed mb-6"><EditText path={`activities.${i}.desc`} multiline /></p>
                   <button type="button" onClick={() => selectAndScrollToBook("activity", a.name)} className="inline-flex items-center justify-center w-full bg-primary text-primary-foreground py-3 rounded-full text-xs tracking-widest uppercase font-medium hover:bg-accent hover:text-accent-foreground transition">Book Now</button>
                 </div>
               </motion.article>
@@ -279,18 +287,20 @@ function Index() {
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
             {gallery.map((src, i) => (
-              <motion.button
-                type="button"
-                onClick={() => setLightbox(i)}
-                key={`${src}-${i}`}
-                initial={{ opacity: 0, y: 40 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-50px" }}
-                transition={{ delay: (i % 4) * 0.1, duration: 0.8 }}
-                className={`overflow-hidden rounded-sm bg-muted cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-accent ${i === 0 || i === 5 ? "row-span-2 aspect-[3/4] md:aspect-auto" : "aspect-square"}`}
-              >
-                <img src={src} alt="Palm Garden gallery" className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out" loading="lazy" />
-              </motion.button>
+              <div key={`${src}-${i}`} className={`relative overflow-hidden rounded-sm bg-muted ${i === 0 || i === 5 ? "row-span-2 aspect-[3/4] md:aspect-auto" : "aspect-square"}`}>
+                <motion.button
+                  type="button"
+                  onClick={() => setLightbox(i)}
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-50px" }}
+                  transition={{ delay: (i % 4) * 0.1, duration: 0.8 }}
+                  className="w-full h-full cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-accent"
+                >
+                  <img src={src} alt="Palm Garden gallery" className="w-full h-full object-cover hover:scale-105 transition-transform duration-1000 ease-out" loading="lazy" />
+                </motion.button>
+                <EditOverlay path={`gallery.${i}`} className="absolute top-2 right-2 z-30" />
+              </div>
             ))}
           </div>
         </div>
@@ -307,21 +317,9 @@ function Index() {
             className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center"
             onClick={() => setLightbox(null)}
           >
-            <button
-              onClick={(e) => { e.stopPropagation(); setLightbox(null); }}
-              aria-label="Close"
-              className="absolute top-5 right-5 text-white/80 hover:text-white p-2"
-            ><X className="w-7 h-7" /></button>
-            <button
-              onClick={(e) => { e.stopPropagation(); setLightbox((i) => (i === null ? null : (i - 1 + gallery.length) % gallery.length)); }}
-              aria-label="Previous"
-              className="absolute left-3 md:left-8 text-white/70 hover:text-white p-3"
-            ><ChevronLeft className="w-8 h-8" /></button>
-            <button
-              onClick={(e) => { e.stopPropagation(); setLightbox((i) => (i === null ? null : (i + 1) % gallery.length)); }}
-              aria-label="Next"
-              className="absolute right-3 md:right-8 text-white/70 hover:text-white p-3"
-            ><ChevronRight className="w-8 h-8" /></button>
+            <button onClick={(e) => { e.stopPropagation(); setLightbox(null); }} aria-label="Close" className="absolute top-5 right-5 text-white/80 hover:text-white p-2"><X className="w-7 h-7" /></button>
+            <button onClick={(e) => { e.stopPropagation(); setLightbox((i) => (i === null ? null : (i - 1 + gallery.length) % gallery.length)); }} aria-label="Previous" className="absolute left-3 md:left-8 text-white/70 hover:text-white p-3"><ChevronLeft className="w-8 h-8" /></button>
+            <button onClick={(e) => { e.stopPropagation(); setLightbox((i) => (i === null ? null : (i + 1) % gallery.length)); }} aria-label="Next" className="absolute right-3 md:right-8 text-white/70 hover:text-white p-3"><ChevronRight className="w-8 h-8" /></button>
             <motion.img
               key={lightbox}
               initial={{ opacity: 0, scale: 0.96 }}
@@ -360,7 +358,7 @@ function Index() {
               </div>
               <div className="flex items-start gap-4">
                 <Star className="w-5 h-5 text-accent mt-1 shrink-0 fill-accent" />
-                <div><p className="font-medium">Rated {review.rating} on Google</p><p className="text-muted-foreground">From {review.reviewCount}</p></div>
+                <div><p className="font-medium">Rated <EditText path="review.rating" /> on Google</p><p className="text-muted-foreground">From <EditText path="review.reviewCount" /></p></div>
               </div>
             </div>
           </motion.div>
@@ -423,7 +421,6 @@ function BookingSection({ rooms, activities, selection, onSelectionConsumed }: {
   }, [allOptions, form.itemKey]);
 
   const triggerCall = () => {
-    // Use a synthetic anchor click — most reliable across iOS Safari & Android Chrome
     const a = document.createElement("a");
     a.href = PHONE_TEL;
     a.rel = "noopener";
@@ -440,7 +437,6 @@ function BookingSection({ rooms, activities, selection, onSelectionConsumed }: {
     const itemName = rest.join("::");
     const isActivity = kind === "activity";
 
-    // Fire-and-forget webhook to booking bot (don't block UI)
     try {
       void fetch("https://palm-garden-bot.onrender.com/new-booking", {
         method: "POST",
@@ -457,7 +453,7 @@ function BookingSection({ rooms, activities, selection, onSelectionConsumed }: {
         }),
         keepalive: true,
       }).catch(() => {});
-    } catch {}
+    } catch { /* noop */ }
 
     const res = await submitBooking({
       kind: isActivity ? "activity" : "room",
@@ -476,7 +472,6 @@ function BookingSection({ rooms, activities, selection, onSelectionConsumed }: {
       return;
     }
     setSubmitted(true);
-    // Trigger phone call to reception immediately (preserves user gesture)
     triggerCall();
   };
 
