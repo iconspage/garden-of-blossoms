@@ -96,7 +96,7 @@ export type SiteData = {
 
 export const DEFAULT_DATA: SiteData = {
   hero: {
-    image: heroAsset.url,
+    image: "https://i.postimg.cc/sfM34m41/palm-garden-hero.jpg",
     eyebrow: "Kaase · Kumasi · Ghana",
     title: "A garden retreat in the heart of Ashanti.",
     subtitle: "Where centuries of Kumasi hospitality meet quiet luxury, lush palms, and unhurried days.",
